@@ -3,27 +3,34 @@ import IUserLogin from '../models/IUserLogin';
 import IRegister from '../models/IRegister';
 import ITodoList from '../models/ITodoList';
 import ITodoItem from '../models/ITodoItem';
+import IUserDTOs from '../models/IUserDTOs';
 const responseBody = (response: AxiosResponse) => response.data;
 axios.defaults.baseURL = "http://localhost:5000/api"
-axios.interceptors.request.use(req => {
-    // `req` is the Axios request config, so you can modify
-    // the `headers`.
-    req.headers.authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJhZGFzaCIsIm5hbWVpZCI6IjEzMzUzOTBiLTkwNGMtNDQwYS1iNDI3LWZjM2ZmMTI1OGM0NSIsImVtYWlsIjoiZGltYXNkb21AdWtyLm5ldCIsIm5iZiI6MTYxNTMxMTA3NCwiZXhwIjoxNjE1OTE1ODc0LCJpYXQiOjE2MTUzMTEwNzR9.j5IeLD9kWYiiyEHoiWlWejE57yolpwysv6yS7YEsYyE';
-    return req;
-  });
-
  let agend = {
-Login:async (user:IUserLogin)=>{
-    return axios.post("/Account",user)
-},
-Register:async(register:IRegister)=>{
-    return axios.post("/Account/register",register)
-},
+   SetToken:(token:string)=>{
+     debugger
+    axios.interceptors.request.use(req => {
+      req.headers.authorization = `Bearer ${token} `;
+      return req;
+    });
+   }
+   ,
+Login: (user:IUserLogin):Promise<IUserDTOs>=>axios.post("/Account",user).then(responseBody)
+,
+Register:(register:IRegister)=>axios.post("/Account/register",register).then(responseBody)
+,
 GetTodoLists:  ():Promise<ITodoList[]>=>axios.get("/TodoLists").then(responseBody)
 ,
 GetTodoItems: (Id:string|undefined):Promise<ITodoItem[]>=>axios.get(`/TodoItems/${Id}`).then(responseBody)
 ,
 SetDoneStatus:(id:string|undefined):Promise<boolean>=>axios.post(`/TodoItems/done/${id}`).then(responseBody)
+,
+CreateTodoItem:(todoItem:ITodoItem)=>axios.post("/TodoItems",todoItem).then(response=>response) ,
+DeleteTodoItem:(id:string|undefined)=>axios.delete(`/TodoItems/${id}`).then(response=>response),
+ChangeTodoItem:(id:string|undefined , description:string)=>axios.put(`/TodoItems/${id}`).then(response=>response),
+CreateTodoList:(todoList:ITodoList)=>axios.post("/TodoLists",todoList).then(response=>response),
+DeleteTodoList:(id:string)=>axios.delete(`/TodoLists/${id}`).then(responseBody)
+
 
 }
 

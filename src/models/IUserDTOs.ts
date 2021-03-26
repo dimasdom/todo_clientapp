@@ -1,5 +1,5 @@
 export default interface IUserDTOs{
-    UserName:string,
-    Id:string,
-    Token:string
+    userName:string,
+    id:string,
+    token:string
 }
