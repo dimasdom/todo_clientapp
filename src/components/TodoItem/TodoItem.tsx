@@ -5,7 +5,7 @@ export const TodoItem:React.FC<ITodoItemProps> = (props) => {
     const [desc,setDesc] = useState(props.description);
     let [isChange,setChange]=useState(false)
     return(
-        <Row>
+        <Row className="scale-up-top">
             <Col><input  type="checkbox" checked={props.done} onChange={()=>{props.setDoneStatus(props.id)}}/></Col>
             {isChange?<Fragment><Col><p><input value={desc} onChange={(e)=>{setDesc(e.target.value)}}/></p></Col>
             <Col><Button onClick={()=>{props.changeTodoItem(props.id,desc);setChange(false)}} >Change Item</Button></Col>

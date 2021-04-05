@@ -28,8 +28,13 @@ SetDoneStatus:(id:string|undefined):Promise<boolean>=>axios.post(`/TodoItems/don
 CreateTodoItem:(todoItem:ITodoItem)=>axios.post("/TodoItems",todoItem).then(response=>response) ,
 DeleteTodoItem:(id:string|undefined)=>axios.delete(`/TodoItems/${id}`).then(response=>response),
 ChangeTodoItem:(id:string|undefined , description:string)=>axios.put(`/TodoItems/${id}`).then(response=>response),
-CreateTodoList:(todoList:ITodoList)=>axios.post("/TodoLists",todoList).then(response=>response),
-DeleteTodoList:(id:string)=>axios.delete(`/TodoLists/${id}`).then(responseBody)
+CreateTodoList:(todoList:ITodoList,userId:string|undefined)=>axios.post(`/TodoLists/createPersonalTodoList/${userId}`,todoList).then(response=>response),
+DeleteTodoList:(id:string,UserId:string)=>axios.delete(`/TodoLists/${UserId}/${id}`).then(responseBody),
+GetByUserId:(id:string|undefined)=>axios.get(`/TodoLists/getByUserId/${id}`).then(responseBody),
+ChangeCommonStatus:(id:string,UserIds:string[])=>axios.post(`/TodoLists/changeCommonStatus/${id}`,{UserIds}).then(responseBody),
+SendFriendRequest:(id:string,UserId:string)=>axios.post(`/Account/sentFriendRequest/${id}`,{UserId}).then(responseBody),
+AcceptFriendRequest:(id:string,UserId:string)=>axios.post(`/Account/acceptFriendRequest/${id}`,{UserId}).then(responseBody),
+SearchUsersByUserName:(UserName:string)=>axios.post(`/Account/searchUser`,{UserName}).then(responseBody)
 
 
 }

@@ -1,8 +1,9 @@
 import {RootStore} from "./RootStore";
-import { makeObservable, observable, action } from 'mobx';
+import { makeObservable, observable, action, runInAction } from 'mobx';
 import ITodoItem from "../models/ITodoItem";
 import agend from "../agend/agend";
 import { v4 as uuidv4 } from 'uuid';
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 class TodoItemsStore{
     rootStore:RootStore ;
@@ -12,15 +13,34 @@ class TodoItemsStore{
     }
     @observable TodoItems : ITodoItem[] | null = null;
     @observable IsLoading : boolean = false ;
+    @observable HubConnection : HubConnection|null=null;
     @action SetItems = (data:ITodoItem[])=>{
         
         this.TodoItems = data
     }
     @action GetTodoLists = async  (id:string|undefined)=>{
 
-
-      
+        if(this.rootStore.todoLists.TodoListsMapped.get(id!)?.common){
             this.IsLoading = true 
+            let  data= await agend.GetTodoItems(id);
+            this.SetItems(data)
+            this.IsLoading = false
+            this.HubConnection = new HubConnectionBuilder()
+            .withUrl('http://localhost:5000/todoList?todoListId'+id,{
+                accessTokenFactory:()=>this.rootStore.user.UserData?.token!
+            })
+            .withAutomaticReconnect()
+            .configureLogging(LogLevel.Information) 
+            .build();
+            this.HubConnection.start().catch(error=>console.log("some error with hub connection"));
+            this.HubConnection.on('ReceiveTodoItem',(todoItem:ITodoItem)=>{
+                runInAction(()=>this.TodoItems?.push(todoItem))
+            })
+
+        }else{
+            
+            this.IsLoading = true 
+            this.HubConnection?.stop();
             let  data= await agend.GetTodoItems(id);
             this.SetItems(data)
             this.IsLoading = false
@@ -28,6 +48,7 @@ class TodoItemsStore{
         
         console.log(this.TodoItems)
     }
+}
     @action DeleteTodoItem = async (id:string|undefined)=>{
         let status = await agend.DeleteTodoItem(id)
         let todoItems = this.TodoItems?.filter((i)=>i.id!==id)
@@ -61,7 +82,7 @@ class TodoItemsStore{
     }
     @action CreateTodoItem = async (todoListId:string|undefined,desc:string)=>{
         if(todoListId){
-            let todoItem:ITodoItem = {todoListId:todoListId,id:uuidv4(),description:desc,done:false}
+            let todoItem:ITodoItem = {todoListId:todoListId,id:uuidv4(),description:desc,done:false,createdByUserId:this.rootStore.user.UserData?.id}
             let status = await agend.CreateTodoItem(todoItem)
             this.TodoItems?.push(todoItem)
         }else{

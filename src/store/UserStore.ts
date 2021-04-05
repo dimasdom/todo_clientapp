@@ -14,6 +14,7 @@ class UserStore {
   
 @observable UserData : IUserDTOs | null = null;
 @observable IsLogin : boolean = false ;
+@observable SearchResult :IUserDTOs|null =null;
 @action SignIn = async (login:IUserLogin,remember:boolean)=>{
 let data = await agend.Login(login)
 console.log(remember)
@@ -24,8 +25,8 @@ if(remember){
   window.localStorage.setItem("userData",JSON.stringify(data))
 }
 agend.SetToken(data.token)
-this.UserData = data
 runInAction(()=>{
+  this.UserData = data
   this.IsLogin = true
 })
 
@@ -62,6 +63,17 @@ this.IsLogin = true
               window.localStorage.removeItem("userData")
             }
         }
+}
+@action SendFriendRequest = async (id:string)=>{
+
+let status = await agend.SendFriendRequest(id,this.UserData?.id!)
+}
+@action AcceptFriendRequest = async (id:string)=>{
+  await agend.AcceptFriendRequest(id,this.UserData?.id!)
+  this.UserData?.usersFriends.push(id)
+}
+@action SearchUserByUserName = async (userName:string)=>{
+  this.SearchResult = await agend.SearchUsersByUserName(userName)
 }
 }
 
