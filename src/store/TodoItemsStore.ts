@@ -26,7 +26,7 @@ class TodoItemsStore{
             this.SetItems(data)
             this.IsLoading = false
             this.HubConnection = new HubConnectionBuilder()
-            .withUrl('http://localhost:5000/todoList?todoListId'+id,{
+            .withUrl('http://localhost:5000/todoList?todoListId='+id,{
                 accessTokenFactory:()=>this.rootStore.user.UserData?.token!
             })
             .withAutomaticReconnect()
@@ -81,15 +81,21 @@ class TodoItemsStore{
         }
     }
     @action CreateTodoItem = async (todoListId:string|undefined,desc:string)=>{
-        if(todoListId){
+        if(this.HubConnection){
+        try{
+            await this.HubConnection.invoke("CreateTodoItem",{TodoListId:todoListId,Description:desc,CreatedByUserId:this.rootStore.user.UserData?.id})
+        }catch{
+            console.error("something went wrong")
+        }
+        
+    }else{if(todoListId){
             let todoItem:ITodoItem = {todoListId:todoListId,id:uuidv4(),description:desc,done:false,createdByUserId:this.rootStore.user.UserData?.id}
             let status = await agend.CreateTodoItem(todoItem)
             this.TodoItems?.push(todoItem)
         }else{
             console.log("Invalid data")
-        }
-        
-    }
+        }}
+}
 }
 
 export default TodoItemsStore
