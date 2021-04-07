@@ -34,7 +34,8 @@ GetByUserId:(id:string|undefined)=>axios.get(`/TodoLists/getByUserId/${id}`).the
 ChangeCommonStatus:(id:string,UserIds:string[])=>axios.post(`/TodoLists/changeCommonStatus/${id}`,{UserIds}).then(responseBody),
 SendFriendRequest:(id:string,UserId:string)=>axios.post(`/Account/sentFriendRequest/${id}`,{UserId}).then(responseBody),
 AcceptFriendRequest:(id:string,UserId:string)=>axios.post(`/Account/acceptFriendRequest/${id}`,{UserId}).then(responseBody),
-SearchUsersByUserName:(UserName:string)=>axios.post(`/Account/searchUser`,{UserName}).then(responseBody)
+SearchUsersByUserName:(UserName:string)=>axios.post(`searchUser`,{UserName}).then(responseBody),
+SetAvatar:(id:string,avatar:any)=>{let formData = new FormData();formData.append('avatar',avatar);console.log(avatar);return axios.post(`/Account/setAvatar/${id}`,formData,{headers:{'Content-type':'multipart/form-data'}}).then(responseBody)}
 
 
 }

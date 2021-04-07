@@ -75,6 +75,11 @@ let status = await agend.SendFriendRequest(id,this.UserData?.id!)
 @action SearchUserByUserName = async (userName:string)=>{
   this.SearchResult = await agend.SearchUsersByUserName(userName)
 }
+@action SetAvatar=async(avatar:any)=>{
+  let avatarResponse:string = await agend.SetAvatar(this.UserData?.id!,avatar)
+ 
+  
+}
 }
 
 export default UserStore
