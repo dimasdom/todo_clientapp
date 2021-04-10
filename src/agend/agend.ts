@@ -28,14 +28,14 @@ SetDoneStatus:(id:string|undefined):Promise<boolean>=>axios.post(`/TodoItems/don
 CreateTodoItem:(todoItem:ITodoItem)=>axios.post("/TodoItems",todoItem).then(response=>response) ,
 DeleteTodoItem:(id:string|undefined)=>axios.delete(`/TodoItems/${id}`).then(response=>response),
 ChangeTodoItem:(id:string|undefined , description:string)=>axios.put(`/TodoItems/${id}`).then(response=>response),
-CreateTodoList:(todoList:ITodoList,userId:string|undefined)=>axios.post(`/TodoLists/createPersonalTodoList/${userId}`,todoList).then(response=>response),
-DeleteTodoList:(id:string,UserId:string)=>axios.delete(`/TodoLists/${UserId}/${id}`).then(responseBody),
-GetByUserId:(id:string|undefined)=>axios.get(`/TodoLists/getByUserId/${id}`).then(responseBody),
+CreateTodoList:(todoList:ITodoList,userId:string|undefined)=>axios.post(`/TodoLists`,todoList).then(response=>response),
+DeleteTodoList:(id:string,UserId:string)=>axios.delete(`/TodoLists/${id}`).then(responseBody),
+GetByUserId:(id:string|undefined)=>axios.get(`/TodoLists`).then(responseBody),
 ChangeCommonStatus:(id:string,UserIds:string[])=>axios.post(`/TodoLists/changeCommonStatus/${id}`,{UserIds}).then(responseBody),
-SendFriendRequest:(id:string,UserId:string)=>axios.post(`/Account/sentFriendRequest/${id}`,{UserId}).then(responseBody),
-AcceptFriendRequest:(id:string,UserId:string)=>axios.post(`/Account/acceptFriendRequest/${id}`,{UserId}).then(responseBody),
-SearchUsersByUserName:(UserName:string)=>axios.post(`searchUser`,{UserName}).then(responseBody),
-SetAvatar:(id:string,avatar:any)=>{let formData = new FormData();formData.append('avatar',avatar);console.log(avatar);return axios.post(`/Account/setAvatar/${id}`,formData,{headers:{'Content-type':'multipart/form-data'}}).then(responseBody)}
+SendFriendRequest:(id:string,UserId:string)=>axios.post(`/Account/sentFriendRequest/${id}`).then(responseBody),
+AcceptFriendRequest:(id:string,UserId:string)=>axios.post(`/Account/acceptFriendRequest/${id}`).then(responseBody),
+SearchUsersByUserName:(UserName:string)=>axios.post('/Account/searchUser',{UserName}).then(responseBody),
+SetAvatar:(id:string,avatar:any):Promise<string>=>{let formData = new FormData();formData.append('avatar',avatar);console.log(avatar);return axios.post(`/Account/setAvatar`,formData,{headers:{'Content-type':'multipart/form-data'}}).then(responseBody)}
 
 
 }

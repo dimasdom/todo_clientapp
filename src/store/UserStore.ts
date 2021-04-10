@@ -68,16 +68,30 @@ this.IsLogin = true
 
 let status = await agend.SendFriendRequest(id,this.UserData?.id!)
 }
-@action AcceptFriendRequest = async (id:string)=>{
-  await agend.AcceptFriendRequest(id,this.UserData?.id!)
-  this.UserData?.usersFriends.push(id)
+@action AcceptFriendRequest = async (i:IUserDTOs)=>{
+  await agend.AcceptFriendRequest(i.id,this.UserData?.id!)
+  this.UserData?.usersFriends.push(i)
 }
 @action SearchUserByUserName = async (userName:string)=>{
   this.SearchResult = await agend.SearchUsersByUserName(userName)
 }
+@action SetLocalAvatar = (avatar:string)=>{
+  let newUserData:IUserDTOs ={
+    userName:this.UserData?.userName!,
+    id:this.UserData?.id!,
+    token:this.UserData?.token!,
+    avatar:avatar,
+    usersFriends:this.UserData?.usersFriends!,
+    userFriendsRequests:this.UserData?.userFriendsRequests!
+
+  }
+runInAction(()=>{
+ this.UserData = newUserData
+})
+}
 @action SetAvatar=async(avatar:any)=>{
-  let avatarResponse:string = await agend.SetAvatar(this.UserData?.id!,avatar)
- 
+  let newAvatar = await await agend.SetAvatar(this.UserData?.id!,avatar);
+  this.SetLocalAvatar(newAvatar)
   
 }
 }

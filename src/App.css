@@ -63,3 +63,15 @@
             transform-origin: 50% 0%;
   }
 }
+.AvatarImage{
+  height: 300px;
+  width:300px;
+  border-radius: 10%;
+}
+.ChangeAvatarButton{
+  margin-top: -100px;
+  opacity: 0;
+}
+.ChangeAvatarButton:hover{
+  opacity: 1;
+}

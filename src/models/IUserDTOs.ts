@@ -3,6 +3,6 @@ export default interface IUserDTOs{
     id:string,
     token:string,
     avatar:string,
-    usersFriends:string[],
-    userFriendsRequests:string[]
+    usersFriends:IUserDTOs[],
+    userFriendsRequests:IUserDTOs[]
 }
