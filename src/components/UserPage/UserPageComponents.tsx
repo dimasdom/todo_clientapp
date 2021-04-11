@@ -60,8 +60,9 @@ const UserPage: React.FC<RouteComponentProps> = (props) => {
                 <Icon.Search className="ml-4" onClick={() => { context.user.SearchUserByUserName(search) }} >Search</Icon.Search>
                 </Col>
                 </Row>
-            <Row className="mt-4" >{search.length ? context.user.SearchResult ? <> <p>{context.user.SearchResult?.userName}</p>
-                <Button className="ml-2" onClick={() => { context.user.SendFriendRequest(context.user.SearchResult?.id!) }}>Add to Friends</Button></> : "No User with that nickname" : ""}</Row>
+            <Row className="mt-4" >{search.length ? context.user.SearchResult ? <> <p>{context.user.SearchResult?.userName}</p>{
+                context.user.UserData?.userFriendsRequests.filter(i=>i.id==context.user.SearchResult?.id)[0] ==null && context.user.UserData?.usersFriends.filter(i=>i.id==context.user.SearchResult?.id)[0]==null?
+                <Button className="ml-2" onClick={() => { context.user.SendFriendRequest(context.user.SearchResult?.id!) }}>Add to Friends</Button>:<></>}</> : "No User with that nickname" : ""}</Row>
                 </Col></Row>
         </Container>
     )

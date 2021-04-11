@@ -13,8 +13,12 @@ export const Header:React.FC = () => {
   <Navbar.Toggle aria-controls="basic-navbar-nav" />
   <Navbar.Collapse id="basic-navbar-nav">
     <Nav className="mr-auto">
-      <Nav.Item className="m-2" ><Link to="/">Home</Link></Nav.Item>
-      <Nav.Item className="m-2" ><Link to="/userPage">Profile</Link></Nav.Item>
+      <Nav.Item className="m-2" ><Link onClick={()=>{
+        context.todoItems.StopHubConnection()
+      }} to="/">Home</Link></Nav.Item>
+      <Nav.Item className="m-2" ><Link onClick={()=>{
+        context.todoItems.StopHubConnection()
+      }} to="/userPage">Profile</Link></Nav.Item>
       
     </Nav>
   </Navbar.Collapse>

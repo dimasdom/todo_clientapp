@@ -40,7 +40,7 @@ class TodoItemsStore{
         }else{
             
             this.IsLoading = true 
-            this.HubConnection?.stop();
+            this.StopHubConnection()
             let  data= await agend.GetTodoItems(id);
             this.SetItems(data)
             this.IsLoading = false
@@ -48,6 +48,10 @@ class TodoItemsStore{
         
         console.log(this.TodoItems)
     }
+}
+@action StopHubConnection=()=>{
+    this.HubConnection?.stop()
+    this.HubConnection = null
 }
     @action DeleteTodoItem = async (id:string|undefined)=>{
         let status = await agend.DeleteTodoItem(id)
