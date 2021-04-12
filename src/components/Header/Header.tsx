@@ -19,7 +19,12 @@ export const Header:React.FC = () => {
       <Nav.Item className="m-2" ><Link onClick={()=>{
         context.todoItems.StopHubConnection()
       }} to="/userPage">Profile</Link></Nav.Item>
-      
+      <Nav.Item className=" mt-2 SignOutElement">
+          <a href="/" onClick={()=>{
+            context.user.SignOut();
+            window.location.reload();
+          }}>SignOut</a>
+      </Nav.Item>
     </Nav>
   </Navbar.Collapse>
 </Navbar>

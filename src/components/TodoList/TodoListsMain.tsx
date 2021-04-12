@@ -27,7 +27,7 @@ let TodoListsMain:React.FC<RouteComponentProps> = (props)=>{
         <div>
             <Container>
             <Row>
-                <Col xs={10}><h1 className="display-3 m-3">Welcome {context.user.UserData?.userName}</h1></Col><Col xs={2}><a className="mt-3" onClick={()=>{window.location.reload();/*context.user.SignOut(); props.history.push("/login")}*/}}>LogOut</a></Col>
+                <Col><h1 className="display-3 m-3">Welcome {context.user.UserData?.userName}</h1></Col>
             </Row>
             {isCreate?<Row><Col><input value={name} onChange={(e)=>{setName(e.target.value)}}/></Col><Col><Button onClick={()=>{CreateNewTodoList(name);setCreate(false)}}>Create new List</Button></Col>
             <Col><Button onClick={()=>{setCreate(false)}}>Cancel</Button></Col>

@@ -15,9 +15,11 @@ axios.defaults.baseURL = "http://localhost:5000/api"
     });
    }
    ,
-Login: (user:IUserLogin):Promise<IUserDTOs>=>axios.post("/Account",user).then(responseBody)
+Login: (user:IUserLogin):Promise<IUserDTOs>=>axios.post("/Account",user).then(responseBody).catch(err=>err.response)
 ,
-Register:(register:IRegister)=>axios.post("/Account/register",register).then(responseBody)
+SignOut:()=>axios.get('/Account/signOut').then(responseBody)
+,
+Register:(register:IRegister)=>axios.post("/Account/register",register).then(responseBody).catch(err=>err.response)
 ,
 GetTodoLists:  ():Promise<ITodoList[]>=>axios.get("/TodoLists").then(responseBody)
 ,

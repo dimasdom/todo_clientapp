@@ -75,3 +75,6 @@
 .ChangeAvatarButton:hover{
   opacity: 1;
 }
+.SignOutElement{
+  margin-left: 70vw;
+}

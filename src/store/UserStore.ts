@@ -15,35 +15,43 @@ class UserStore {
 @observable UserData : IUserDTOs | null = null;
 @observable IsLogin : boolean = false ;
 @observable SearchResult :IUserDTOs|null =null;
-@action SignIn = async (login:IUserLogin,remember:boolean)=>{
-let data = await agend.Login(login)
-console.log(remember)
+@observable IsError:string|number|null=null;
+@action SignIn = async (login:IUserLogin)=>{
+let data:any = await agend.Login(login)
+console.log(data.status);
+if(data.status){
+  runInAction(()=>{
+    this.IsError=data.status
+  })
+}else{
+  agend.SetToken(data.token)
+  runInAction(()=>{
+    this.UserData = data
+    this.IsLogin = true
+  })
+}
+/*console.log(remember)
 if(remember){
   
   window.localStorage.setItem("login",(new Date().getTime()+259200000).toString())
   window.localStorage.setItem("jwt",data.token)
   window.localStorage.setItem("userData",JSON.stringify(data))
-}
-agend.SetToken(data.token)
-runInAction(()=>{
-  this.UserData = data
-  this.IsLogin = true
-})
+}*/
+
 
 }
-@action SignOut = ()=>{
+@action SignOut = async ()=>{
+ await agend.SignOut()
 this.UserData = null
 this.IsLogin = false
-window.localStorage.removeItem("login")
-              window.localStorage.removeItem("jwt")
-              window.localStorage.removeItem("userData")
 }
 @action SignUp = async (register:IRegister)=>{
 let data = await agend.Register(register)
-window.localStorage.setItem("jwt",data.token)
-agend.SetToken(data.token)
-this.UserData = data
-this.IsLogin = true
+if(data.status){
+  runInAction(()=>{
+    this.IsError = data.status
+  })
+}
 }
 @action CheckLogin = ()=>{
   let loginLocal =window.localStorage.getItem("login")
