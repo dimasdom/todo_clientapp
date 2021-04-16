@@ -16,7 +16,11 @@ class UserStore {
 @observable IsLogin : boolean = false ;
 @observable SearchResult :IUserDTOs|null =null;
 @observable IsError:string|number|null=null;
+@observable IsLoading:boolean=false;
+
+
 @action SignIn = async (login:IUserLogin)=>{
+  this.IsLoading=true;
 let data:any = await agend.Login(login)
 console.log(data.status);
 if(data.status){
@@ -30,6 +34,7 @@ if(data.status){
     this.IsLogin = true
   })
 }
+this.IsLoading=false;
 /*console.log(remember)
 if(remember){
   
@@ -78,6 +83,16 @@ let status = await agend.SendFriendRequest(id,this.UserData?.id!)
 }
 @action AcceptFriendRequest = async (i:IUserDTOs)=>{
   await agend.AcceptFriendRequest(i.id,this.UserData?.id!)
+  let newUserData:IUserDTOs ={
+    userName:this.UserData?.userName!,
+    id:this.UserData?.id!,
+    token:this.UserData?.token!,
+    avatar:this.UserData?.avatar!,
+    usersFriends:this.UserData?.usersFriends!,
+    userFriendsRequests:this.UserData?.usersFriends.filter(r=>r.id!==i.id)!
+
+  }
+  this.UserData=newUserData;
   this.UserData?.usersFriends.push(i)
 }
 @action SearchUserByUserName = async (userName:string)=>{
@@ -101,6 +116,11 @@ runInAction(()=>{
   let newAvatar = await await agend.SetAvatar(this.UserData?.id!,avatar);
   this.SetLocalAvatar(newAvatar)
   
+}
+@action ClearSearchResult = ()=>{
+  runInAction(()=>{
+    this.SearchResult=null;
+  })
 }
 }
 

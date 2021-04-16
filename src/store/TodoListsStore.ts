@@ -11,6 +11,7 @@ class TodoListsStore {
   }
    @observable  TodoLists : ITodoList[]|null = null;
    @observable  TodoListsMapped = new Map<string,ITodoList>()
+   @observable Error:number|null=null;
    @action SetTodoLists = (todolists : ITodoList[])=>{
       
       runInAction(()=>{
@@ -36,13 +37,18 @@ class TodoListsStore {
        
       let todoList:ITodoList = {id:uuidv4(),tittle:name,
         userId:this.rootStore.user.UserData?.id,common:false,userIds:JSON.stringify([this.rootStore.user.UserData.id])}
-      let status = await agend.CreateTodoList(todoList,this.rootStore.user.UserData.id)
-      runInAction(()=>{
-        this.TodoLists?.push(todoList)
-      })
-    }else{
-      console.log("LogIn please")
-    }
+      let response = await agend.CreateTodoList(todoList,this.rootStore.user.UserData.id)
+      if(response.status===500){
+        
+          this.Error = response.status
+      }else{
+        runInAction(()=>{
+          this.TodoLists?.push(todoList)
+          this.Error =null;
+        })
+      }
+      }
+      
   }
   @action ChangeCommonStatus = async (id:string,userIds:string[])=>{
     await agend.ChangeCommonStatus(id,userIds)

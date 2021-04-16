@@ -9,12 +9,13 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import "./App.css"
 import UserPage from './components/UserPage/UserPageComponents';
 import Header from './components/Header/Header';
-
+import ReactNotification from 'react-notifications-component'
 
 let App:React.FC = () =>{
   let location = useLocation()
   return (
     <div>
+      <ReactNotification/>
       <Header/>
         <TransitionGroup>
           <CSSTransition

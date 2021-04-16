@@ -5,7 +5,7 @@ import  RootStore  from '../../store/RootStore';
 import {Check2} from 'react-bootstrap-icons'
 import TodoItem from '../TodoItem/TodoItem';
 import { RouteComponentProps } from 'react-router-dom';
-
+import { store } from 'react-notifications-component';
 interface ITodoListPageProps {
     id?:string
 }
@@ -19,12 +19,64 @@ const TodoListPage:React.FC<RouteComponentProps<ITodoListPageProps>> = (props) =
     useEffect(()=>{
         console.log(context.todoItems.IsLoading)
         context.todoItems.GetTodoLists(props.match.params.id)
-        setTimeout(()=>{console.log(context.todoItems.IsLoading)},1000)
-        },[])
+    },[])
+        useEffect(()=>{
+          if(context.todoItems.Error){
+              store.addNotification({
+                  title: "Sorry!",
+                  message: "Internal Server Error",
+                  type: "danger",
+                  insert: "top",
+                  container: "top-right",
+                  animationIn: ["animate__animated", "animate__fadeIn"],
+                  animationOut: ["animate__animated", "animate__fadeOut"],
+                  dismiss: {
+                    duration: 2000,
+                    onScreen: true
+                  }
+                });
+          }
+      },[context.todoItems.Error])
+        let CreateNewTodoItem = ()=>{
+          if(desc!==""){
+            context.todoItems.CreateTodoItem(props.match.params.id,desc);
+            
+            store.addNotification({
+              title: "Wonderful!",
+              message: "TodoItem Was Created",
+              type: "success",
+              insert: "top",
+              container: "top-right",
+              animationIn: ["animate__animated", "animate__fadeIn"],
+              animationOut: ["animate__animated", "animate__fadeOut"],
+              dismiss: {
+                duration: 2000,
+                onScreen: true
+              }
+            });
+            setCreate(false)
+            setDesc("")
+          }else{
+            store.addNotification({
+              title: "Error!",
+              message: "TodoItem can't be empty",
+              type: "warning",
+              insert: "top",
+              container: "top-right",
+              animationIn: ["animate__animated", "animate__fadeIn"],
+              animationOut: ["animate__animated", "animate__fadeOut"],
+              dismiss: {
+                duration: 2000,
+                onScreen: true
+              }
+            });
+          }
+          
+        }
     return(
         <Container>
             <Row>
-                <h1 className="display-4">Your task in {props.match.params.id ?context.todoLists.TodoListsMapped.get(props.match.params.id)?.tittle:"Wrong"}</h1>
+                <h1 className="display-4">Your tasks in {props.match.params.id ?context.todoLists.TodoListsMapped.get(props.match.params.id)?.tittle:"Wrong"}</h1>
             </Row>
             <Row>
                <Button onClick={()=>{setChStatus(true)}}>Add More Users</Button> 
@@ -36,7 +88,7 @@ const TodoListPage:React.FC<RouteComponentProps<ITodoListPageProps>> = (props) =
                 <input value={desc} onChange={(e)=>{setDesc(e.target.value)}}/>
                 </Col>
                 <Col>
-                <Check2 onClick={()=>{context.todoItems.CreateTodoItem(props.match.params.id,desc);setDesc("");setCreate(false)}}>
+                <Check2 onClick={()=>{CreateNewTodoItem()}}>
                     Create new 
                     </Check2>
                     </Col>
@@ -50,6 +102,12 @@ const TodoListPage:React.FC<RouteComponentProps<ITodoListPageProps>> = (props) =
              description={i.description} 
              done={i.done} 
              todoListId={i.todoListId} />)}
+
+
+
+
+
+
              <>
              <Modal show={changeStatus} onHide={()=>{setChStatus(false)}}>
         <Modal.Header closeButton>
@@ -71,6 +129,13 @@ const TodoListPage:React.FC<RouteComponentProps<ITodoListPageProps>> = (props) =
         </Modal.Footer>
       </Modal>
              </>
+
+
+
+
+
+
+
         </Container>
     )
 }

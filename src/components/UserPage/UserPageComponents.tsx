@@ -1,18 +1,50 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router-dom'
 import RootStore from '../../store/RootStore';
 import { observer } from 'mobx-react-lite';
 import PhotoDropZone from '../PhotoUpload/PhotoDropZone';
 import * as Icon from 'react-bootstrap-icons'
-
+import { store } from 'react-notifications-component';
 
 const UserPage: React.FC<RouteComponentProps> = (props) => {
     let [search, setSearch] = useState("")
     let [changeA, setChangeA] = useState(false)
     let [photo, setPhoto] = useState<any>()
     const context = useContext(RootStore)
-   
+   let SendFriendRequest=()=>{
+    context.user.SendFriendRequest(context.user.SearchResult?.id!)
+    context.user.ClearSearchResult()
+    store.addNotification({
+        title: "Done!",
+        message: "Request was sent",
+        type: "success",
+        insert: "top",
+        container: "top-right",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: true
+        }
+      });
+   }
+   let AcceptFriendRequest=(i:any)=>{
+    context.user.AcceptFriendRequest(i);
+    store.addNotification({
+        title: "Awesome!",
+        message: "You have one more friend",
+        type: "success",
+        insert: "top",
+        container: "top-right",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: true
+        }
+      });
+   }
 
     return (
         <Container >
@@ -41,7 +73,7 @@ const UserPage: React.FC<RouteComponentProps> = (props) => {
                 <p>Friend Requests:</p>
             </Row>
             <Row><Col>{
-            context.user.UserData?.userFriendsRequests.map(i => <><p>{i.userName}<Button className="ml-4" onClick={() => { context.user.AcceptFriendRequest(i) }}>Accept</Button></p>
+            context.user.UserData?.userFriendsRequests.map(i => <><p>{i.userName}<Button className="ml-4" onClick={() => { AcceptFriendRequest(i) }}>Accept</Button></p>
                     </>)}
             </Col></Row>
             </Col>
@@ -62,7 +94,7 @@ const UserPage: React.FC<RouteComponentProps> = (props) => {
                 </Row>
             <Row className="mt-4" >{search.length ? context.user.SearchResult ? <> <p>{context.user.SearchResult?.userName}</p>{
                 context.user.UserData?.userFriendsRequests.filter(i=>i.id==context.user.SearchResult?.id)[0] ==null && context.user.UserData?.usersFriends.filter(i=>i.id==context.user.SearchResult?.id)[0]==null?
-                <Button className="ml-2" onClick={() => { context.user.SendFriendRequest(context.user.SearchResult?.id!) }}>Add to Friends</Button>:<></>}</> : "No User with that nickname" : ""}</Row>
+                <Button className="ml-2" onClick={() => { SendFriendRequest() }}>Add to Friends</Button>:<></>}</> : "No User with that nickname" : ""}</Row>
                 </Col></Row>
         </Container>
     )

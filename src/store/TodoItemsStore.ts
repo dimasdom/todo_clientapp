@@ -14,6 +14,7 @@ class TodoItemsStore{
     @observable TodoItems : ITodoItem[] | null = null;
     @observable IsLoading : boolean = false ;
     @observable HubConnection : HubConnection|null=null;
+    @observable Error:number|null=null;
     @action SetItems = (data:ITodoItem[])=>{
         
         this.TodoItems = data
@@ -32,7 +33,7 @@ class TodoItemsStore{
             .withAutomaticReconnect()
             .configureLogging(LogLevel.Information) 
             .build();
-            this.HubConnection.start().catch(error=>console.log("some error with hub connection"));
+            this.HubConnection.start().catch(error=>this.Error=error);
             this.HubConnection.on('ReceiveTodoItem',(todoItem:ITodoItem)=>{
                 runInAction(()=>this.TodoItems?.push(todoItem))
             })
@@ -94,10 +95,14 @@ class TodoItemsStore{
         
     }else{if(todoListId){
             let todoItem:ITodoItem = {todoListId:todoListId,id:uuidv4(),description:desc,done:false,createdByUserId:this.rootStore.user.UserData?.id}
-            let status = await agend.CreateTodoItem(todoItem)
-            this.TodoItems?.push(todoItem)
-        }else{
-            console.log("Invalid data")
+            let response = await agend.CreateTodoItem(todoItem)
+            if(response.status===500){
+                this.Error = response.status
+            }else{
+                this.TodoItems?.push(todoItem)
+                this.Error =null;
+            }
+            
         }}
 }
 }

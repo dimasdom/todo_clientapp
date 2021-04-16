@@ -27,10 +27,10 @@ GetTodoItems: (Id:string|undefined):Promise<ITodoItem[]>=>axios.get(`/TodoItems/
 ,
 SetDoneStatus:(id:string|undefined):Promise<boolean>=>axios.post(`/TodoItems/done/${id}`).then(responseBody)
 ,
-CreateTodoItem:(todoItem:ITodoItem)=>axios.post("/TodoItems",todoItem).then(response=>response) ,
+CreateTodoItem:(todoItem:ITodoItem)=>axios.post("/TodoItems",todoItem).then(response=>response).catch(err=>err.response) ,
 DeleteTodoItem:(id:string|undefined)=>axios.delete(`/TodoItems/${id}`).then(response=>response),
 ChangeTodoItem:(id:string|undefined , description:string)=>axios.put(`/TodoItems/${id}`).then(response=>response),
-CreateTodoList:(todoList:ITodoList,userId:string|undefined)=>axios.post(`/TodoLists`,todoList).then(response=>response),
+CreateTodoList:(todoList:ITodoList,userId:string|undefined)=>axios.post(`/TodoLists`,todoList).then(response=>response).catch(err=>err.response),
 DeleteTodoList:(id:string,UserId:string)=>axios.delete(`/TodoLists/${id}`).then(responseBody),
 GetByUserId:(id:string|undefined)=>axios.get(`/TodoLists`).then(responseBody),
 ChangeCommonStatus:(id:string,UserIds:string[])=>axios.post(`/TodoLists/changeCommonStatus/${id}`,{UserIds}).then(responseBody),

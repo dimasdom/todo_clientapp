@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-notifications-component/dist/theme.css'
+import 'animate.css/animate.min.css';
 import { BrowserRouter as Router} from 'react-router-dom'
 ReactDOM.render(
   <React.StrictMode>

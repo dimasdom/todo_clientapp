@@ -22,7 +22,14 @@ let LoginComponent:React.FC<RouteComponentProps> = (props) => {
     const [email,setEmail] = useState("")
     const [password,setPassword] = useState("")
     const [error,setError]=useState("")
-    return(
+    if(context.user.IsLoading){
+        return(
+            <Container className="LoaderContainer">
+                <div className="lds-heart"><div></div></div>
+            </Container>
+        )
+    }else{
+       return(
         <Container>
 
             <Row className="justify-content-md-center mt-4">
@@ -50,7 +57,9 @@ let LoginComponent:React.FC<RouteComponentProps> = (props) => {
             <Link to="/registration">Don't have account </Link>
             </Row>
         </Container>
-    )
+    ) 
+    }
+    
 }
 
 export default observer(LoginComponent)
